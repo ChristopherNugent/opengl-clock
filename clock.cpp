@@ -1,6 +1,5 @@
 #include <GL/glut.h>
 #include <ctime>
-#include <iostream>
 using namespace std;
 
 
@@ -23,7 +22,6 @@ void drawClock() {
     int min = now->tm_min;
     int sec = now->tm_sec;
 
-    cout << hour << ":" << min << ":" << sec << endl;
 
     drawHourHand(hour, min);
     drawMinuteHand(min, sec);
