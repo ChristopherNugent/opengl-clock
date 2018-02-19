@@ -1,7 +1,12 @@
 #include <GL/glut.h>
 #include <ctime>
+#include <cmath>
 using namespace std;
 
+class wcPt2D {
+public:
+    GLfloat x, y;
+};
 
 // /* Set initial display-window size. */
 // GLsizei winWidth = 600, winHeight = 600;
@@ -11,9 +16,12 @@ using namespace std;
 // GLfloat ywcMin = 0.0, ywcMax = 600.0;
 
 void drawClockFace();
-void drawHourHand(int, int);
-void drawMinuteHand(int, int);
-void drawSecondHand(int);
+void drawHourHand(int hour, int min);
+void drawMinuteHand(int min, int sec);
+void drawSecondHand(int sec);
+void drawHand(int length, int width);
+void circle(wcPt2D ctr, int radius, int detail);
+void square(wcPt2D ctr, int size);
 
 void drawClock() {
     time_t t = time(0);   // get time now
@@ -29,47 +37,49 @@ void drawClock() {
     drawClockFace();
 }
 
-class wcPt2D {
-public:
-    GLfloat x, y;
-};
-
-void square(wcPt2D ctr, int size) {
-    GLint k;
-    glBegin(GL_QUADS);
-    glVertex2f(ctr.x + size, ctr.y + size);
-    glVertex2f(ctr.x + size, ctr.y - size);
-    glVertex2f(ctr.x - size, ctr.y - size);
-    glVertex2f(ctr.x - size, ctr.y + size);
+void drawHand(int length, int width) {
+    glBegin(GL_TRIANGLE_STRIP);
+    glVertex2f(0, 0);
+    glVertex2f(width, length / 2);
+    glVertex2f(0 - width, length / 2);
+    glVertex2f(0, length);
     glEnd();
 }
+
+
 
 
 void drawClockFace() {
     glColor3f(0, 0, 0);
     wcPt2D ctr = {0, 0};
+
     glPushMatrix();
-
-
     int markSize = 7, markDistance = 150;
     for (int i = 0; i < 60; i++) {
         glRotatef(1 * (360 / 60), 0, 0, 1);
         glTranslatef(markDistance, 0, 0);
         glRotatef((i + 1) * (360 / 60), 0, 0, -1);
         square(ctr, 2);
+        // circle(ctr, 2, 5);
         glRotatef((i + 1) * (360 / 60), 0, 0, 1);
 
         glTranslatef(-markDistance, 0, 0);
     }
+    glPopMatrix();
+
+    glPushMatrix();
     for (int i = 0; i < 12; i++) {
         glRotatef(1 * (360 / 12), 0, 0, 1);
         glTranslatef(markDistance, 0, 0);
         glRotatef((i + 1) * (360 / 12), 0, 0, -1);
-        square(ctr, markSize);
+        // square(ctr, markSize);
+        circle(ctr, markSize, 10);
         glRotatef((i + 1) * (360 / 12), 0, 0, 1);
         glTranslatef(-markDistance, 0, 0);
     }
     glPopMatrix();
+
+    circle(ctr, 5, 50);
 }
 
 void drawHourHand(int hour, int min) {
@@ -78,15 +88,16 @@ void drawHourHand(int hour, int min) {
     double theta = (hour / 12.0) * 360;
     theta += (min / 60.0 / 12.0) * 360;
     glPushMatrix();
-    int width = 3, length = 150;
+    int width = 10, length = 100;
     glRotatef(theta, 0, 0, -1);
 
-    glBegin(GL_QUADS);
-    glVertex2f(ctr.x + width, ctr.y + length);
-    glVertex2f(ctr.x + width, ctr.y);
-    glVertex2f(ctr.x - width, ctr.y);
-    glVertex2f(ctr.x - width, ctr.y + length);
-    glEnd();
+    // glBegin(GL_QUADS);
+    // glVertex2f(ctr.x + width, ctr.y + length);
+    // glVertex2f(ctr.x + width, ctr.y);
+    // glVertex2f(ctr.x - width, ctr.y);
+    // glVertex2f(ctr.x - width, ctr.y + length);
+    // glEnd();
+    drawHand(length, width);
 
     glPopMatrix();
 }
@@ -98,14 +109,15 @@ void drawMinuteHand(int min, int sec) {
     theta += (sec / 60.0) * 6;
     // theta *= 6;
     glPushMatrix();
-    int width = 1, length = 150;
+    int width = 5, length = 150;
     glRotatef(theta, 0, 0, -1);
-    glBegin(GL_QUADS);
-    glVertex2f(ctr.x + width, ctr.y + length);
-    glVertex2f(ctr.x + width, ctr.y);
-    glVertex2f(ctr.x - width, ctr.y);
-    glVertex2f(ctr.x - width, ctr.y + length);
-    glEnd();
+    drawHand(length, width);
+    // glBegin(GL_QUADS);
+    // glVertex2f(ctr.x + width, ctr.y + length);
+    // glVertex2f(ctr.x + width, ctr.y);
+    // glVertex2f(ctr.x - width, ctr.y);
+    // glVertex2f(ctr.x - width, ctr.y + length);
+    // glEnd();
 
     glPopMatrix();
 }
@@ -115,15 +127,34 @@ void drawSecondHand(int sec) {
     wcPt2D ctr = {0, 0};
     double theta = 6 * sec;
     glPushMatrix();
-    int width = 1, length = 150;
+    int width = 5, length = 150;
     glRotatef(theta, 0, 0, -1);
-    glBegin(GL_QUADS);
-    glVertex2f(ctr.x + width, ctr.y + length);
-    glVertex2f(ctr.x + width, ctr.y);
-    glVertex2f(ctr.x - width, ctr.y);
-    glVertex2f(ctr.x - width, ctr.y + length);
-    glEnd();
-
+    // glBegin(GL_QUADS);
+    // glVertex2f(ctr.x + width, ctr.y + length);
+    // glVertex2f(ctr.x + width, ctr.y);
+    // glVertex2f(ctr.x - width, ctr.y);
+    // glVertex2f(ctr.x - width, ctr.y + length);
+    // glEnd();
+    drawHand(length, width);
     glPopMatrix();
 }
 
+void square(wcPt2D ctr, int size) {
+    glBegin(GL_QUADS);
+    glVertex2f(ctr.x + size, ctr.y + size);
+    glVertex2f(ctr.x + size, ctr.y - size);
+    glVertex2f(ctr.x - size, ctr.y - size);
+    glVertex2f(ctr.x - size, ctr.y + size);
+    glEnd();
+}
+
+void circle(wcPt2D ctr, int radius, int detail) {
+    glBegin(GL_TRIANGLE_FAN);
+    glVertex2f(ctr.x, ctr.y);
+    for(int i = 0; i < detail; i++) {
+        glVertex2f(ctr.x + radius * cos(2 * i * M_PI / detail), 
+                   ctr.y + radius * sin(2 * i * M_PI / detail));
+    }
+    glVertex2f(ctr.x + radius, ctr.y);
+    glEnd();
+}
