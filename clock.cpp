@@ -31,10 +31,10 @@ void drawClock() {
     int sec = now->tm_sec;
 
 
+    drawClockFace();
     drawHourHand(hour, min);
     drawMinuteHand(min, sec);
     drawSecondHand(sec);
-    drawClockFace();
 }
 
 void drawHand(int length, int width) {
@@ -46,39 +46,46 @@ void drawHand(int length, int width) {
     glEnd();
 }
 
-
-
-
 void drawClockFace() {
-    glColor3f(0, 0, 0);
     wcPt2D ctr = {0, 0};
+    int markSize = 7, faceRadius = 150, caseRadius = 5;
 
+
+
+    glColor3f(0,0,0);
+    circle(ctr, faceRadius * 1.1 + caseRadius, 100);
+    glColor3f(1, 1, 1);
+    circle(ctr, faceRadius * 1.1, 100);
+
+    glColor3f(0, 0, 0);
+    // Ticks for minutes
     glPushMatrix();
-    int markSize = 7, markDistance = 150;
     for (int i = 0; i < 60; i++) {
         glRotatef(1 * (360 / 60), 0, 0, 1);
-        glTranslatef(markDistance, 0, 0);
+        glTranslatef(faceRadius, 0, 0);
         glRotatef((i + 1) * (360 / 60), 0, 0, -1);
         square(ctr, 2);
         // circle(ctr, 2, 5);
         glRotatef((i + 1) * (360 / 60), 0, 0, 1);
 
-        glTranslatef(-markDistance, 0, 0);
+        glTranslatef(-faceRadius, 0, 0);
     }
     glPopMatrix();
 
+    // Ticks for hours
     glPushMatrix();
     for (int i = 0; i < 12; i++) {
         glRotatef(1 * (360 / 12), 0, 0, 1);
-        glTranslatef(markDistance, 0, 0);
+        glTranslatef(faceRadius, 0, 0);
         glRotatef((i + 1) * (360 / 12), 0, 0, -1);
         // square(ctr, markSize);
         circle(ctr, markSize, 10);
         glRotatef((i + 1) * (360 / 12), 0, 0, 1);
-        glTranslatef(-markDistance, 0, 0);
+        glTranslatef(-faceRadius, 0, 0);
     }
     glPopMatrix();
 
+    // Stem
     circle(ctr, 5, 50);
 }
 
