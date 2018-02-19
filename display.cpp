@@ -1,7 +1,5 @@
 #include <GL/glut.h>
 #include <unistd.h>
-#include <ctime>
-#include <iostream>
 #include "clock.cpp"
 
 /* Set initial display-window size. */
