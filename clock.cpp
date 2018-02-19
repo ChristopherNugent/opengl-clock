@@ -15,10 +15,14 @@ public:
 // GLfloat xwcMin = 0.0, xwcMax = 600.0;
 // GLfloat ywcMin = 0.0, ywcMax = 600.0;
 
+// 
 void drawClockFace();
 void drawHourHand(int hour, int min);
 void drawMinuteHand(int min, int sec);
 void drawSecondHand(int sec);
+void drawStem();
+
+// Helpers
 void drawHand(int length, int width);
 void circle(wcPt2D ctr, int radius, int detail);
 void square(wcPt2D ctr, int size);
@@ -30,11 +34,17 @@ void drawClock() {
     int min = now->tm_min;
     int sec = now->tm_sec;
 
-
     drawClockFace();
     drawHourHand(hour, min);
     drawMinuteHand(min, sec);
     drawSecondHand(sec);
+    drawStem();
+}
+
+void drawStem() {
+    glColor3f(0, 0, 0);
+    wcPt2D ctr = {0, 0};
+    circle(ctr, 5, 50);
 }
 
 void drawHand(int length, int width) {
@@ -50,22 +60,19 @@ void drawClockFace() {
     wcPt2D ctr = {0, 0};
     int markSize = 7, faceRadius = 150, caseRadius = 5;
 
-
-
-    glColor3f(0,0,0);
+    glColor3f(0, 0, 0);
     circle(ctr, faceRadius * 1.1 + caseRadius, 100);
     glColor3f(1, 1, 1);
     circle(ctr, faceRadius * 1.1, 100);
 
-    glColor3f(0, 0, 0);
     // Ticks for minutes
+    glColor3f(0, 0, 0);
     glPushMatrix();
     for (int i = 0; i < 60; i++) {
         glRotatef(1 * (360 / 60), 0, 0, 1);
         glTranslatef(faceRadius, 0, 0);
         glRotatef((i + 1) * (360 / 60), 0, 0, -1);
         square(ctr, 2);
-        // circle(ctr, 2, 5);
         glRotatef((i + 1) * (360 / 60), 0, 0, 1);
 
         glTranslatef(-faceRadius, 0, 0);
@@ -86,7 +93,7 @@ void drawClockFace() {
     glPopMatrix();
 
     // Stem
-    circle(ctr, 5, 50);
+    // circle(ctr, 5, 50);
 }
 
 void drawHourHand(int hour, int min) {
@@ -110,7 +117,7 @@ void drawHourHand(int hour, int min) {
 }
 
 void drawMinuteHand(int min, int sec) {
-    glColor3f(0.0, 0.0, 1);
+    glColor3f(0.0, 0.0, 0.0);
     wcPt2D ctr = {0, 0};
     double theta = min * 6;
     theta += (sec / 60.0) * 6;
@@ -134,7 +141,7 @@ void drawSecondHand(int sec) {
     wcPt2D ctr = {0, 0};
     double theta = 6 * sec;
     glPushMatrix();
-    int width = 5, length = 150;
+    int width = 3, length = 150;
     glRotatef(theta, 0, 0, -1);
     // glBegin(GL_QUADS);
     // glVertex2f(ctr.x + width, ctr.y + length);
@@ -158,8 +165,8 @@ void square(wcPt2D ctr, int size) {
 void circle(wcPt2D ctr, int radius, int detail) {
     glBegin(GL_TRIANGLE_FAN);
     glVertex2f(ctr.x, ctr.y);
-    for(int i = 0; i < detail; i++) {
-        glVertex2f(ctr.x + radius * cos(2 * i * M_PI / detail), 
+    for (int i = 0; i < detail; i++) {
+        glVertex2f(ctr.x + radius * cos(2 * i * M_PI / detail),
                    ctr.y + radius * sin(2 * i * M_PI / detail));
     }
     glVertex2f(ctr.x + radius, ctr.y);
