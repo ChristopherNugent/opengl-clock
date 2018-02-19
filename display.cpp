@@ -25,7 +25,7 @@ void displayFcn(void) {
 
 void init(void) {
     /* Set color of display window to white. */
-    glClearColor(1.0, 1.0, 0.7, 0.0);
+    glClearColor(0.5, 0.5, 0.3, 0.0);
 }
 
 void winReshapeFcn(GLint newWidth, GLint newHeight) {
